@@ -1,0 +1,1 @@
+﻿docker build -t dnn-platform:9.1.1.129-232 .
