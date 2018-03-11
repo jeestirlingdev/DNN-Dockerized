@@ -1,1 +1,0 @@
-﻿docker run -d -p 1433:1433 -e sa_password=P@ssw0rd -e ACCEPT_EULA=Y microsoft/mssql-server-windows-express
