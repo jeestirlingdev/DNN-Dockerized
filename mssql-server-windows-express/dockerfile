@@ -1,6 +1,8 @@
 # escape=`
 
-FROM microsoft/windowsservercore
+# cannot find an image that works on laptop
+FROM mcr.microsoft.com/windows/servercore:20H2
+# previously microsoft/windowsservercore
 
 # Download Links:
 ENV sql_express_download_url "https://go.microsoft.com/fwlink/?linkid=829176"

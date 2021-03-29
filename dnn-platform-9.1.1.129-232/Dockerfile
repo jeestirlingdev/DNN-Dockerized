@@ -1,6 +1,7 @@
 ﻿# escape=`
 
-FROM microsoft/dotnet-framework:4.7.1-windowsservercore-1709
+FROM mcr.microsoft.com/dotnet/framework/runtime:4.8-windowsservercore-20H2
+# was microsoft/dotnet-framework:4.7.1-windowsservercore-1709
 
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 
