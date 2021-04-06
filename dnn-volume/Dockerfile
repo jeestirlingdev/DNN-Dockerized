@@ -7,9 +7,9 @@ SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPref
 
 RUN Add-WindowsFeature Web-Server; `
     Add-WindowsFeature NET-Framework-45-ASPNET; `
-    Add-WindowsFeature Web-Asp-Net45; `
-    Remove-Item -Recurse C:\inetpub\wwwroot\*; `    
+    Add-WindowsFeature Web-Asp-Net45; `   
     Invoke-WebRequest https://dotnetbinaries.blob.core.windows.net/servicemonitor/2.0.1.1/ServiceMonitor.exe -OutFile C:\ServiceMonitor.exe
+    #Remove-Item -Recurse C:\inetpub\wwwroot\*; ` 
 
 # Download Roslyn nupkg and ngen the compiler binaries
 RUN Invoke-WebRequest -Uri https://api.nuget.org/packages/microsoft.net.compilers.2.3.1.nupkg -OutFile C:\microsoft.net.compilers.2.3.1.zip ; `	
@@ -24,12 +24,10 @@ RUN Invoke-WebRequest -Uri https://api.nuget.org/packages/microsoft.net.compiler
 
 ENV ROSLYN_COMPILER_LOCATION c:\\RoslynCompilers\\tools
 
-# Copy DNN files and add permissions
-RUN [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12 ; `
-    Invoke-WebRequest -Uri https://github.com/dnnsoftware/Dnn.Platform/releases/download/v9.1.1/DNN_Platform_9.1.1.129-232_Install.zip -OutFile C:\DNN_Platform_9.1.1.129-232_Install.zip ; `
-    Expand-Archive -Path C:\DNN_Platform_9.1.1.129-232_Install.zip -DestinationPath C:\inetpub\wwwroot\ ; `
-    Remove-Item C:\DNN_Platform_9.1.1.129-232_Install.zip -Force ; `
-    cmd /c icacls c:\inetpub\wwwroot /grant 'IIS AppPool\DefaultAppPool:(OI)(CI)M' /T ;
+# make install files accessible
+ADD wwwroot /inetpub/wwwroot/
+WORKDIR /inetpub/wwwroot
+#VOLUME wwwroot:C:\inetpub\wwwroot\
 
 EXPOSE 80
 

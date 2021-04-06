@@ -2,6 +2,9 @@ version: '3.1'
 services:
   web-dnn:
     build: .
-    image: dnn-platform:9.1.1.129-232
+    image: dnn-volume
+    #volumes:
+    #  - ./wwwroot:/inetpub/wwwroot
     ports:
      - "80:80"
+

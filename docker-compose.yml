@@ -1,0 +1,21 @@
+version: '3.1'
+services:
+    dnn-volume-mini:
+        build: .\dnn-volume-mini
+        image: dnn-volume-mini
+        volumes:
+        - .\dnn-volume-mini\dnnroot:c:\inetpub\wwwroot
+        ports:
+        - "80:80"
+        depends_on:
+        - mssql-server-windows-express
+    mssql-server-windows-express:
+        build: .\mssql-server-windows-express
+        image: mssql-windows-express
+        environment:
+            - 'SA_PASSWORD=P@ssw0rd'
+        ports:
+            - "1433:1433"
+
+volumes:
+  dnnroot:
