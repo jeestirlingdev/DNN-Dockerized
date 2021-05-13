@@ -15,6 +15,7 @@ services:
         hostname: mssqldocker
         environment:
             - 'SA_PASSWORD=P@ssw0rd'
+            - attach_dbs=[{'dbName':'DNNDEV','dbFiles':['C:\\SQLData\\DNNDEV.mdf','C:\\SQLData\\DNNDEV_log.ldf']}]
         ports:
             - "1433:1433"
 

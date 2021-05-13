@@ -20,9 +20,8 @@ $ docker compose up
     1. if you are downloading the Windows Server images for the first time this will be a **slow** process
     1. The SQL Server Express install is also slow 
 1. When the containers are running open your browser at http://localhost. This will show the static placeholder in /dnn-volume-mini/wwwroot
-1. Connect to the SQL Server instance using SSMS or Azure data studio using the *sa* account and create a database for the DNN install
-    1. these commands could be included in the *docker compose* file, see [Bob walker's blog post](https://octopus.com/blog/running-sql-server-developer-install-with-docker)
-    1. you could also attach a database as part of the install process by adding it to the dockerfile using attach_dbs environment variable (again see [Bob walker's blog post](https://octopus.com/blog/running-sql-server-developer-install-with-docker))
+1. Connect to the SQL Server instance using SSMS or Azure data studio using the *sa* account and verify the existence of the empty DNNDEV database.
+
 
 ### Install DNN
 1. Unzip the DNN install package into the /dnn-volume-mini/wwwroot folder
@@ -39,6 +38,8 @@ Microsoft now promotes a Linux container for SQL Server, however there is a SqQL
    * update the sql_express_download_url as necessary to get the SQL Server installer
 * update ACCPET_EULA variable to Y
 * hard code the sa password into the Dockerfile rather than refering to a host machine file, *this is clearly not suitable in an environment where the containers will be accessible over your network*.
+
+The docker compose file adds a volume for the database files and passes an environment variable, *attach_dbs*, attach these to the SQL Server instance. This allows the database to persist after each reboot. The approach is taken from [Bob walker's blog post](https://octopus.com/blog/running-sql-server-developer-install-with-docker). 
 
 ### Connecting to the SQL Server 
 On the Docker host machine you can connect to the SQL Server instance with SQLCMD, SSMS or Azure Data Studio using *localhost*.
