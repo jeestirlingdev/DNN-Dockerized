@@ -4,7 +4,7 @@ services:
     build: .
     image: dnn-volume-mini
     volumes:
-      - .\dnnroot:c:\inetpub\wwwroot
+      - .\wwwroot:c:\inetpub\wwwroot
     ports:
      - "80:80"
 volumes:

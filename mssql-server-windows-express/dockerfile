@@ -1,6 +1,4 @@
-FROM mcr.microsoft.com/windows/servercore:20H2
-
-LABEL maintainer "Perry Skountrianos"
+FROM mcr.microsoft.com/windows/servercore:1909
 
 # Download Links:
 ENV sql_express_download_url "https://go.microsoft.com/fwlink/?linkid=829176"
