@@ -13,29 +13,26 @@ In this repository you can find the docker recipes necessary to run the DNN vers
 1. Navigate to the root of the repository
  ```
 $ cd DNN-Dockerized
+
+$ docker compose up
 ```
-2. Build the SQL Server and Web Server containers
+1. This will build both the SQL Server and Web Server containers
     1. if you are downloading the Windows Server images for the first time this will be a **slow** process
- ```
-$ docker-compose up
-```
+    1. The SQL Server Express install is also slow 
 1. When the containers are running open your browser at http://localhost. This will show the static placeholder in /dnn-volume-mini/wwwroot
+1. Connect to the SQL Server instance using SSMS or Azure data studio using the *sa* account and create a database for the DNN install
+    1. these commands could be included in the *docker compose* file, see [Bob walker's blog post](https://octopus.com/blog/running-sql-server-developer-install-with-docker)
+    1. you could also attach a database as part of the install process by adding it to the dockerfile using attach_dbs environment variable (again see [Bob walker's blog post](https://octopus.com/blog/running-sql-server-developer-install-with-docker))
 
 ### Install DNN
-4. Unzip the DNN install package into the /dnn-volume-mini/wwwroot folder
+1. Unzip the DNN install package into the /dnn-volume-mini/wwwroot folder
 1. Open your browser at http://localhost and run the DNN installer
-1. To connect to the database need to use its IP address, *note this changes with each build* *might be able to use name if make it sensible*
+1. To connect to the database need to use its Container ID, *note this changes with each build* *might be able to use name if make it sensible*
 
-```
-docker ps -a
-docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' CONTAINERID
-```
-Where *CONTAINERID* is the container ID of your SQL Server container
-
-## Notes on this fork
+# Notes on this fork
 This fork of DNN-Dockerized accommodates several changes in Microsoft's approach to Docker on Windows
 
-### New SQL Server container: mssql-server-windows-express
+## SQL Server container: mssql-server-windows-express
 Microsoft now promotes a Linux container for SQL Server, however there is a SqQL Server 2017 repo that uses severcore at https://github.com/microsoft/mssql-docker/tree/master/windows. This repo uses the Dockerfile and start.ps1 for the SQL Server Express option found there with the following changes:
 * update the base image to the current MS repository, mcr.microsoft.com/windows/servercore:*TAG*
    * When deploying your own version choose the TAG that matches the OS of the [Windows OS](https://docs.microsoft.com/en-us/virtualization/windowscontainers/deploy-containers/version-compatibility) hosting the containers
@@ -43,7 +40,20 @@ Microsoft now promotes a Linux container for SQL Server, however there is a SqQL
 * update ACCPET_EULA variable to Y
 * hard code the sa password into the Dockerfile rather than refering to a host machine file, *this is clearly not suitable in an environment where the containers will be accessible over your network*.
 
-### IIS server: dnn-volume-mini
+### Connecting to the SQL Server 
+On the Docker host machine you can connect to the SQL Server instance with SQLCMD, SSMS or Azure Data Studio using *localhost*.
+
+From the IIS Server container (and the DNN instance hosted on it) you can use the *hostname* specified in the docker-compose file, i.e. **mssqldocker**
+
+You can also use SQL Server container IP address. You can find the IP address by opening a command prompt within the container and using *ipconfig*. The Docker command for gettng the IP address of any container:
+
+```
+docker ps -a
+docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' CONTAINERID
+```
+Where *CONTAINERID* is the container ID of your SQL Server container
+
+## IIS server: dnn-volume-mini
 The revised container is just an IIS server with .NET enabled. Again, ensure the image used is compatible with your host OS.
 
 The \wwwroot folder is mounted as \inetpub\wwwroot in the IIS Server container. This allows you to interact with it via the host OS. **Note: grant access to the shared folder to EVERYONE** within the host system.

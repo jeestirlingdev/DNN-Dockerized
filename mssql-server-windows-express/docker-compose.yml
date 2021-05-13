@@ -3,6 +3,7 @@ services:
   mssql:
     build: .
     image: mssql-windows-express
+    hostname: mssqldocker
     environment:
       - 'SA_PASSWORD=P@ssw0rd'
     ports:

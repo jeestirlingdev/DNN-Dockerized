@@ -4,7 +4,7 @@ services:
         build: .\dnn-volume-mini
         image: dnn-volume-mini
         volumes:
-        - .\dnn-volume-mini\dnnroot:c:\inetpub\wwwroot
+        - .\dnn-volume-mini\wwwroot:c:\inetpub\wwwroot
         ports:
         - "80:80"
         depends_on:
@@ -12,6 +12,7 @@ services:
     mssql-server-windows-express:
         build: .\mssql-server-windows-express
         image: mssql-windows-express
+        hostname: mssqldocker
         environment:
             - 'SA_PASSWORD=P@ssw0rd'
         ports:
