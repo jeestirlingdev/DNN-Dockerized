@@ -1,5 +1,8 @@
 # DNN-Dockerized
-In this repository you can find the docker recipes necessary to run the DNN version community on dockerized Windows containers.
+In this repository you can find the docker recipes necessary to run the [DNN Platform](https://github.com/dnnsoftware/Dnn.Platform) on dockerized Windows containers. The approach makes the DNN instance assets available on the Windows host so that you can
+* install whatever version of DNN you require (or indeed any .NET web application) 
+* update the content of the DNN instance from the host and persist between restarts
+This should make it a useful development environment. 
 
 ## Instructions
 ### Prepare the Docker host
