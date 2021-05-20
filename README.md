@@ -5,6 +5,8 @@ In this repository you can find the docker recipes necessary to run the [DNN Pla
 
 This should make it a useful development environment. 
 
+**this branch is a single container with both SQL server and IIS on the same instance. This should make the data connection more stable.**
+
 ## Instructions
 ### Prepare the Docker host
 
