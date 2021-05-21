@@ -6,6 +6,7 @@ ENV sql_express_download_url "https://go.microsoft.com/fwlink/?linkid=829176"
 ENV servicemonitor_url "https://dotnetbinaries.blob.core.windows.net/servicemonitor/2.0.1.1/ServiceMonitor.exe"
 
 ENV ACCEPT_EULA="Y" \
+    attach_dbs=[{'dbName':'DNNDEV','dbFiles':['C:\\SQLData\\DNNDEV.mdf','C:\\SQLData\\DNNDEV_log.ldf']}] \
     sa_password="P@ssw0rd"
     # sa_password_path="C:\ProgramData\Docker\secrets\sa-password"
 
@@ -14,11 +15,6 @@ SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPref
 # make install files accessible
 COPY start.ps1 /
 WORKDIR /
-
-# empty wwwroot default files and download ServiceMonitor
-RUN  Remove-Item -Recurse C:\inetpub\wwwroot\*; \ 
-    Invoke-WebRequest $env:servicemonitor_url -OutFile C:\ServiceMonitor.exe
-
 
 # download and install SQL Server Express
 RUN Invoke-WebRequest -Uri $env:sql_express_download_url -OutFile sqlexpress.exe ; \
@@ -33,8 +29,12 @@ RUN stop-service MSSQL`$SQLEXPRESS ; \
 
 CMD .\start -sa_password $env:sa_password -ACCEPT_EULA $env:ACCEPT_EULA -attach_dbs \"$env:attach_dbs\" -Verbose
 
+# empty wwwroot default files and download ServiceMonitor
+RUN  Remove-Item -Recurse C:\inetpub\wwwroot\*; \ 
+    Invoke-WebRequest $env:servicemonitor_url -OutFile C:\ServiceMonitor.exe
+
 WORKDIR /inetpub/wwwroot
 
-EXPOSE 80
+EXPOSE 80 1443
 
 ENTRYPOINT ["C:\\ServiceMonitor.exe", "w3svc"]

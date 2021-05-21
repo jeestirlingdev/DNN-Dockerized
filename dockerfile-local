@@ -1,11 +1,8 @@
 # Use when the SQL Express installer and ServiceMonitor binaries are available in the paths defined by the environment variables
 FROM mcr.microsoft.com/dotnet/framework/aspnet:4.8-windowsservercore-1909
 
-# Download Links:
-ENV sql_express_path ".\sqlexpress.exe"
-ENV servicemonitor_path ".\ServiceMonitor.exe"
-
 ENV ACCEPT_EULA="Y" \
+    attach_dbs=[{'dbName':'DNNDEV','dbFiles':['C:\\SQLData\\DNNDEV.mdf','C:\\SQLData\\DNNDEV_log.ldf']}] \
     sa_password="P@ssw0rd"
     # sa_password_path="C:\ProgramData\Docker\secrets\sa-password"
 
@@ -14,15 +11,12 @@ SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPref
 # make install files accessible
 COPY start.ps1 /
 # add local exe files to container
-COPY $env:sql_express_path /
-COPY $env:servicemonitor_path /
+COPY sqlexpress.exe /
+COPY ServiceMonitor.exe /
 #WORKDIR /
 
-# empty wwwroot default files 
-RUN  Remove-Item -Recurse C:\inetpub\wwwroot\*
-
 # Runs the SQLExpress installer from a local file 
-RUN        Start-Process -Wait -FilePath $env:sql_express_path -ArgumentList /qs, /x:setup ; \
+RUN        Start-Process -Wait -FilePath sqlexpress.exe -ArgumentList /qs, /x:setup ; \
         .\setup\setup.exe /q /ACTION=Install /INSTANCENAME=SQLEXPRESS /FEATURES=SQLEngine /UPDATEENABLED=0 /SQLSVCACCOUNT='NT AUTHORITY\System' /SQLSYSADMINACCOUNTS='BUILTIN\ADMINISTRATORS' /TCPENABLED=1 /NPENABLED=0 /IACCEPTSQLSERVERLICENSETERMS ; \
         Remove-Item -Recurse -Force sqlexpress.exe, setup
 
@@ -33,8 +27,11 @@ RUN stop-service MSSQL`$SQLEXPRESS ; \
 
 CMD .\start -sa_password $env:sa_password -ACCEPT_EULA $env:ACCEPT_EULA -attach_dbs \"$env:attach_dbs\" -Verbose
 
+# empty wwwroot default files 
+RUN  Remove-Item -Recurse C:\inetpub\wwwroot\*
+
 WORKDIR /inetpub/wwwroot
 
-EXPOSE 80
+EXPOSE 80 1443
 
 ENTRYPOINT ["C:\\ServiceMonitor.exe", "w3svc"]
