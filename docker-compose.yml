@@ -1,23 +1,14 @@
 version: '3.1'
 services:
-    dnn-volume-mini:
-        build: .\dnn-volume-mini
-        image: dnn-volume-mini
+    dnn-server:
+        image: dnn-server
         volumes:
-        - .\dnn-volume-mini\wwwroot:c:\inetpub\wwwroot
+        - .\wwwroot:c:\inetpub\wwwroot
         ports:
         - "80:80"
-        depends_on:
-        - mssql-server-windows-express
-    mssql-server-windows-express:
-        build: .\mssql-server-windows-express
-        image: mssql-windows-express
-        hostname: mssqldocker
         environment:
-            - 'SA_PASSWORD=P@ssw0rd'
             - attach_dbs=[{'dbName':'DNNDEV','dbFiles':['C:\\SQLData\\DNNDEV.mdf','C:\\SQLData\\DNNDEV_log.ldf']}]
-        ports:
-            - "1433:1433"
+
 
 volumes:
-  dnnroot:
+  wwwroot:

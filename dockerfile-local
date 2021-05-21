@@ -1,11 +1,10 @@
-FROM mcr.microsoft.com/windows/servercore:1909
+FROM mcr.microsoft.com/dotnet/framework/aspnet:4.8-windowsservercore-1909
 
 # Download Links:
-ENV sql_express_download_url "https://go.microsoft.com/fwlink/?linkid=829176"
+ENV sql_express_path ".\sqlexpress.exe"
+ENV servicemonitor_path ".\ServiceMonitor.exe"
 
-ENV sa_password="_" \
-    attach_dbs="[]" \
-    ACCEPT_EULA="Y" \
+ENV ACCEPT_EULA="Y" \
     sa_password="P@ssw0rd"
     # sa_password_path="C:\ProgramData\Docker\secrets\sa-password"
 
@@ -13,10 +12,16 @@ SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPref
 
 # make install files accessible
 COPY start.ps1 /
-WORKDIR /
+# add local exe files to container
+COPY $env:sql_express_path /
+COPY $env:servicemonitor_path /
+#WORKDIR /
 
-RUN Invoke-WebRequest -Uri $env:sql_express_download_url -OutFile sqlexpress.exe ; \
-        Start-Process -Wait -FilePath .\sqlexpress.exe -ArgumentList /qs, /x:setup ; \
+# empty wwwroot default files 
+RUN  Remove-Item -Recurse C:\inetpub\wwwroot\*
+
+# Runs the SQLExpress installer from a local file 
+RUN        Start-Process -Wait -FilePath $env:sql_express_path -ArgumentList /qs, /x:setup ; \
         .\setup\setup.exe /q /ACTION=Install /INSTANCENAME=SQLEXPRESS /FEATURES=SQLEngine /UPDATEENABLED=0 /SQLSVCACCOUNT='NT AUTHORITY\System' /SQLSYSADMINACCOUNTS='BUILTIN\ADMINISTRATORS' /TCPENABLED=1 /NPENABLED=0 /IACCEPTSQLSERVERLICENSETERMS ; \
         Remove-Item -Recurse -Force sqlexpress.exe, setup
 
@@ -26,3 +31,9 @@ RUN stop-service MSSQL`$SQLEXPRESS ; \
         set-itemproperty -path 'HKLM:\software\microsoft\microsoft sql server\mssql14.SQLEXPRESS\mssqlserver\' -name LoginMode -value 2 ;
 
 CMD .\start -sa_password $env:sa_password -ACCEPT_EULA $env:ACCEPT_EULA -attach_dbs \"$env:attach_dbs\" -Verbose
+
+WORKDIR /inetpub/wwwroot
+
+EXPOSE 80
+
+ENTRYPOINT ["C:\\ServiceMonitor.exe", "w3svc"]
