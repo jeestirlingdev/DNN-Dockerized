@@ -1,6 +1,6 @@
 # The script sets the sa password and start the SQL Service 
 # Also it attaches additional database from the disk
-# The format for attach_dbs
+# The plain text password is a security risk and raises an error in linting
 
 param(
 [Parameter(Mandatory=$false)]

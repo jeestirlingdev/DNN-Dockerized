@@ -1,14 +1,17 @@
-version: '3.1'
+version: '2.4'
+# required to increase memory
 services:
     dnn-server:
-        image: dnn-server
+        build: .
+        mem_limit: 4096M
         volumes:
         - .\wwwroot:c:\inetpub\wwwroot
+        - .\db:c:\sqldata
         ports:
         - "80:80"
-        environment:
-            - attach_dbs=[{'dbName':'DNNDEV','dbFiles':['C:\\SQLData\\DNNDEV.mdf','C:\\SQLData\\DNNDEV_log.ldf']}]
-
+        - "1433:1433"
+       
 
 volumes:
   wwwroot:
+  db:

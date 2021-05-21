@@ -1,3 +1,4 @@
+# Use when the SQL Express installer and ServiceMonitor binaries are available in the paths defined by the environment variables
 FROM mcr.microsoft.com/dotnet/framework/aspnet:4.8-windowsservercore-1909
 
 # Download Links:

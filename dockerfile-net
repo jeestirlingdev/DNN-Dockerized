@@ -1,3 +1,4 @@
+# Use when the SQL Server Express installer and ServiceMonitor binaries are downloaded from the URLs defined in the environment variables
 FROM mcr.microsoft.com/dotnet/framework/aspnet:4.8-windowsservercore-1909
 
 # Download Links:
