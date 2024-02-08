@@ -4,6 +4,9 @@ This repository is a fork of the orginal DNN-Dockerized repo. You can find the o
 # Notes on this fork
 This fork of DNN-Dockerized accommodates several changes in Microsoft's approach to Docker on Windows and SQL Server in particular. 
 
+Two options for deploying DNN are included
+- `\remotedb` for use with an existing SQL Server instance
+- `\localdb` to install SQL Server Express as well as the DNN front end
 
 
 # \remotedb
@@ -13,6 +16,11 @@ This folder contains a single image for the IIS server. In order to run DNN a SQ
 The revised container is just an IIS server with .NET enabled. Again, ensure the image used is compatible with your host OS.
 
 The \wwwroot folder is mounted as \inetpub\wwwroot in the IIS Server container. This allows you to interact with it via the host OS. **Note: grant access to the shared folder to EVERYONE** within the host system. *again this is not appropriate for systems exposed on the network*
+
+### Installing DNN
+1. remove the `default.htm` placeholder file
+2. unzip the installer package into the \wwwroot folder
+3. open `http://localhost` and run the DNN installer as usual
 
 ### Notes on running IIS on windows containers
 * https://mcpmag.com/articles/2019/11/20/iis-on-windows-server-containers.aspx
@@ -31,7 +39,7 @@ This folder contains a docker-compose definition that will launch two Windows co
 - a SQL Server container *mssql-server-windows-express*
 
 ## IIS server: dnn-volume-mini
-This is identical to the container in `\remotedb`
+This is identical to the container in `\remotedb`. See notes above.
 
 ## SQL Server container: mssql-server-windows-express
 Microsoft now only actively supports using a Linux container for SQL Server, however there is a SQL Server 2017 repo that uses severcore at https://github.com/microsoft/mssql-docker/tree/master/windows. This fork uses the Dockerfile and start.ps1 for the SQL Server Express option found there with the following changes:
