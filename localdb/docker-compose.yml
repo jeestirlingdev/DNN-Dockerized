@@ -14,7 +14,7 @@ services:
         image: mssql-windows-express
         hostname: mssqldocker
         environment:
-            - 'SA_PASSWORD=P@ssw0rd'
+            - 'SA_PASSWORD=SqlP@ssw0rd1'
             - attach_dbs=[{'dbName':'DNNDEV','dbFiles':['C:\\SQLData\\DNNDEV.mdf','C:\\SQLData\\DNNDEV_log.ldf']}]
         ports:
             - "1433:1433"
