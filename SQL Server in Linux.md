@@ -34,6 +34,8 @@ Notes on the Microsoft image:
 
 ### Create a writeable volume
 
+Based on [Running SQL Server in Linux containers on Windows using Docker Compose](https://nothing2say.co.uk/running-sql-server-in-linux-containers-on-windows-using-docker-compose-d72c13e11bfb) *Medium*
+
 The following is one method for creating a docker volume that can be written by SQL Server:
 1. Run the revised *docker-compose* below
    1. this will create the *sqldata* docker volume
